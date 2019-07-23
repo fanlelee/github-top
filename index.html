@@ -72,7 +72,7 @@
         bind: function(){
             var _this = this
             var clock
-            _this.$main.scroll(function(e){
+            _this.$sections.eq(0).scroll(function(e){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
                     if((_this.$main.height() + _this.$main.scrollTop() === _this.$sections.eq(0).height())){
@@ -152,7 +152,7 @@
         bind: function(){
             var _this = this
             var clock
-            _this.$main.scroll(function(){
+            _this.$sections.eq(1).scroll(function(){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
                     if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(1).height() - 10)){
@@ -230,7 +230,7 @@
         bind: function(){
             var _this = this
             var clock
-            _this.$main.scroll(function(){
+            _this.$sections.eq(2).scroll(function(){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
                     if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(2).height() - 10)){
