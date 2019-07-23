@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1306683_kt03sexwft.css">
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <title>GitHub榜单</title>
+</head>
+<body>
+    <main>
+        <section class="action">
+            <div class="repos lists">
+                <!-- <div class="item">
+                    <a class="html_url" href="https://github.com/freeCodeCamp/freeCodeCamp">
+                        <div class="order"><span>1</span></div>
+                        <div class="detail">
+                            <h2 class="name">freeCodeCamp</h2>
+                            <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>
+                            <div class="watchers_count">303943 start</div>
+                        </div>
+                    </a>
+                </div> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section>
+            <div class="users">
+                <!-- <div class="item">
+                    <a href="https://github.com/ruanyf">
+                        <img src="https://avatars0.githubusercontent.com/u/905434?v=4" alt="">
+                        <h2>ruanyf</h2>
+                    </a>
+                </div> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section>
+            <div class="search-area">
+                <input type="text" placeholder="Search repos">
+                <span class="search-btn">Search</span>
+            </div>
+            <div class="search lists"></div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+    </main>
+    <footer class="clearfix">
+        <div class="active"><span class="iconfont icon-top-repos"></span><span>Top repos</span></div>
+        <div class="top-users"><span class="iconfont icon-top-users"></span><span>Top users</span></div>
+        <div><span class="iconfont icon-search"></span><span>Search</span></div>
+    </footer>
+<script>
+    var repos = {
+        init: function(){
+            var _this = this
+            this.page = 1
+            this.num = 0
+            this.$main = $('main')
+            this.$sections = $('main>section')
+            this.$loading = $('main>section .loading')
+            this.isloading = false
+            this.scrolled = false
+
+            this.getData(function(result){
+                _this.renderData(result.data.items)
+                _this.page++
+            })
+            this.bind()
+        },
+        bind: function(){
+            var _this = this
+            var clock
+            _this.$main.scroll(function(e){
+                if(clock) clearInterval(clock)
+                clock  = setTimeout(function(){
+                    if((_this.$main.height() + _this.$main.scrollTop() === _this.$sections.eq(0).height())){
+                        if(_this.scrolled) return
+                        _this.scrolled = true
+                        _this.getData(function(result){
+                            _this.renderData(result.data.items)
+                            _this.page++
+                        })
+                    }
+                },300)
+            })
+        },
+        getData: function(callback){
+            var _this = this
+            if(_this.isloading) return
+            _this.isloading = true
+            _this.$loading.show()
+            $.ajax({
+            url: "https://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc",
+            type: 'GET',
+            data: {
+                page: _this.page
+            },
+            dataType: 'jsonp'
+            }).done(function(ret){
+                _this.$loading.hide()
+                _this.scrolled = false
+                callback(ret)
+            }).fail(function(){
+                console.log('error..')
+            }).always(
+                _this.isloading = false
+            )            
+        },
+        renderData: function(datas){
+            var _this = this
+            if(!datas)return
+            datas.forEach(function(data){
+                _this.num += 1
+                var str =   `<div class="item">
+                                <a class="html_url" href="">
+                                    <div class="order"><span></span></div>
+                                    <div class="detail">
+                                        <h2 class="name"></h2>
+                                        <div class="description"></div>
+                                        <div class="watchers_count"></div>
+                                    </div>
+                                </a>
+                            </div>`                           
+                var $node = $(str)
+                $node.find('.html_url').attr('href', data.html_url)
+                $node.find('.order>span').text(_this.num)
+                $node.find('.detail>.name').text(data.name)
+                $node.find('.detail>.description').text(data.description)
+                $node.find('.detail>.watchers_count').text(data.watchers_count+' star')
+                $('main>section').eq(0).find('.repos').append($node)
+            })
+        }
+    }
+    var users = {
+        init: function(){
+            var _this = this
+            this.page = 1
+            this.$main = $('main')
+            this.$sections = $('main>section')
+            this.$loading = $('main>section .loading')
+            this.isloading = false
+            this.scrolled = false
+            
+            this.getData(function(result){
+                _this.renderData(result.data.items)
+                _this.page += 1
+            })
+            this.bind()
+        },
+        bind: function(){
+            var _this = this
+            var clock
+            _this.$main.scroll(function(){
+                if(clock) clearInterval(clock)
+                clock  = setTimeout(function(){
+                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(1).height() - 10)){
+                        if(_this.scrolled) return
+                        _this.scrolled = true
+                        _this.getData(function(result){
+                            _this.renderData(result.data.items)
+                            _this.page += 1
+                        })
+                    }
+                },300)
+            })
+        },
+        getData: function(callback){
+            var _this = this
+            if(_this.isloading) return
+            _this.isloading = true
+            _this.$loading.show()
+            $.ajax({
+            url: "https://api.github.com/search/users?q=followers:>1000+language:javascript",
+            type: 'GET',
+            data: {
+                page: _this.page
+            },
+            dataType: 'jsonp'
+            }).done(function(ret){
+                _this.$loading.hide()
+                _this.scrolled = false
+                callback(ret)
+            }).fail(function(){
+                console.log('error..')
+            }).always(
+                _this.isloading = false
+            )            
+        },
+        renderData: function(datas){
+            var _this = this
+            datas.forEach(function(data){
+                var str =   `<div class="item">
+                                <a class="ele" href="">
+                                    <img src="" alt="">
+                                    <h2></h2>
+                                </a>
+                            </div>`                           
+                var $node = $(str)
+                $node.find('.ele').attr('href', data.html_url)
+                $node.find('.ele>img').attr('src', data.avatar_url)
+                $node.find('.ele>h2').text(data.login)
+                $('main>section>.users').append($node)
+            })
+        }
+    }
+
+    
+    var search = {
+        init: function(){
+            var _this = this
+            this.page = 1
+            this.num = 0
+            this.$main = $('main')
+            this.$sections = $('main>section')
+            this.$loading = $('main>section .loading')
+            this.isloading = false
+            this.scrolled = false
+
+            $('main>section>.search-area>.search-btn').click(function(){
+                _this.getData(function(result){
+                    _this.renderData(result.data.items)
+                    _this.page += 1
+                })
+            })
+
+            this.bind()
+        },
+        bind: function(){
+            var _this = this
+            var clock
+            _this.$main.scroll(function(){
+                if(clock) clearInterval(clock)
+                clock  = setTimeout(function(){
+                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(2).height() - 10)){
+                        if(_this.scrolled) return
+                        _this.scrolled = true
+                        _this.getData(function(result){
+                            _this.renderData(result.data.items)
+                            _this.page += 1
+                        })
+                    }
+                },300)
+            })
+        },
+        getData: function(callback){
+            var _this = this
+            if(_this.isloading) return
+            _this.isloading = true
+            _this.$loading.show()
+            var keyword = $('main>section>.search-area>input').val()
+            $.ajax({
+            url: `https://api.github.com/search/repositories?q=${keyword}+language:javascript&sort=stars&order=desc&page=${_this.page}`,
+            type: 'GET',
+            dataType: 'jsonp'
+            }).done(function(ret){
+                _this.$loading.hide()
+                _this.scrolled = false
+                callback(ret)
+            }).fail(function(){
+                console.log('error..')
+            }).always(
+                _this.isloading = false
+            )            
+        },
+        renderData: function(datas){
+            var _this = this
+            datas.forEach(function(data){
+                _this.num += 1
+                var str =   `<div class="item">
+                                <a class="html_url" href="">
+                                    <div class="order"><span></span></div>
+                                    <div class="detail">
+                                        <h2 class="name"></h2>
+                                        <div class="description"></div>
+                                        <div class="watchers_count"></div>
+                                    </div>
+                                </a>
+                            </div>`                           
+                var $node = $(str)
+                $node.find('.html_url').attr('href', data.html_url)
+                $node.find('.order>span').text(_this.num)
+                $node.find('.detail>.name').text(data.name)
+                $node.find('.detail>.description').text(data.description)
+                $node.find('.detail>.watchers_count').text(data.watchers_count+' star')
+                $('main>section').eq(2).find('.search').append($node)
+            })
+        }
+    }
+
+
+    var App = {
+        init: function(){
+            this.$tab = $('footer>div')
+            this.$container = $('main>section')
+            this.bind()
+
+            repos.init()
+            users.init()
+            search.init()
+
+        },
+        bind: function(){
+            var _this = this
+            _this.$tab.click(function(){
+                $(this).addClass('active').siblings().removeClass('active')
+                _this.$container.eq($(this).index()).addClass('action').siblings().removeClass('action')
+            })
+        }
+    }
+
+    App.init()
+</script>
+</body>
+</html>

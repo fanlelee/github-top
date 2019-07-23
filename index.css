@@ -1,0 +1,139 @@
+/* reset css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,body {
+    height: 100%;
+}
+body {
+    position: relative;
+    font-size: 12px;
+    line-height: 1.2;
+    background-color: #fff;
+}
+
+/* common css */
+.clearfix::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+/* page css */
+main {
+    height: calc(100vh - 60px);
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch; /* 在IOS上滚动的弹性效果 */
+}
+
+main>section {
+    display: none;
+}
+
+main .action {
+    display: block;
+}
+main>section>.item {
+    display: inline-block;
+    width: 100%;
+}
+
+main>section .item>a {
+    margin: 0 10px;
+    padding: 10px;
+    display: flex;
+    border-bottom: 1px solid #ccc;
+}
+main>section>.lists>.item>a .order {
+    display: flex;
+    align-items: center;
+}
+main>section>.lists>.item>a .order>span {
+    color:#fff;
+    background-color: green;
+    padding: 0 4px;
+}
+
+main>section>.lists>.item>a .detail {
+    margin-left: 10px;
+}
+
+main>section>.lists>.item>a .detail>.watchers_count {
+    margin-top: 4px;
+    color: #999;
+}
+
+main>section>.users>.item>a>img {
+    width: 50px;
+    border-radius: 5px;
+}
+
+main>section>.users>.item>a>h2 {
+    margin-left: 10px;
+}
+
+
+main>section>.search-area {
+    position: relative;
+    padding: 10px 0;
+    margin: 10px;
+    border-bottom: solid 1px #ccc;
+}
+main>section>.search-area>input {
+    background-color: #eee;
+    border-radius: 2px;
+    border: none;
+    width: calc(100% - 60px);
+    padding: 8px;
+    outline: none;
+}
+main>section>.search-area>.search-btn {
+    position: absolute;
+    right: 0;
+    background-color: #ff5722;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 2px;
+}
+
+main>section>.loading {
+    text-align: center;
+    padding: 5px;
+}
+main>section>.loading>span {
+    display: inline-block;
+    animation: 1s rotate linear infinite;
+}
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: #fff;
+    border-top: solid 1px #ccc;
+}
+
+footer>div {
+    float: left;
+    width: 33.33%;
+    text-align: center;
+    margin: 10px 0;
+}
+footer>div span {
+    display: block;
+}
+
+footer>div.active {
+    color: #ff5722;
+}
