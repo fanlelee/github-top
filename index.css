@@ -29,11 +29,12 @@ a {
 /* page css */
 main {
     height: calc(100vh - 60px);
-    overflow: scroll;
     -webkit-overflow-scrolling: touch; /* 在IOS上滚动的弹性效果 */
 }
 
 main>section {
+    overflow: scroll;
+    height: 100%;
     display: none;
 }
 
