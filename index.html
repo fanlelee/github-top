@@ -62,6 +62,8 @@
             this.$loading = $('main>section .loading')
             this.isloading = false
             this.scrolled = false
+            this.count = 30
+            this.isFinished = false
 
             this.getData(function(result){
                 _this.renderData(result.data.items)
@@ -75,12 +77,15 @@
             _this.$sections.eq(0).scroll(function(e){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
-                    if((_this.$main.height() + _this.$main.scrollTop() === _this.$sections.eq(0).height())){
+                    if((_this.$main.height() + _this.$main.scrollTop() === _this.$sections.eq(0).height())&&!_this.isFinished){
                         if(_this.scrolled) return
                         _this.scrolled = true
                         _this.getData(function(result){
                             _this.renderData(result.data.items)
                             _this.page++
+                            if(_this.page * _this.count >= result.data.total_total_count){
+                                _this.isFinished = true
+                            }
                         })
                     }
                 },300)
@@ -142,7 +147,9 @@
             this.$loading = $('main>section .loading')
             this.isloading = false
             this.scrolled = false
-            
+            this.count = 30
+            this.isFinished = false
+
             this.getData(function(result){
                 _this.renderData(result.data.items)
                 _this.page += 1
@@ -155,12 +162,15 @@
             _this.$sections.eq(1).scroll(function(){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
-                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(1).height() - 10)){
+                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(1).height() - 10)&&!_this.isFinished){
                         if(_this.scrolled) return
                         _this.scrolled = true
                         _this.getData(function(result){
                             _this.renderData(result.data.items)
                             _this.page += 1
+                            if(_this.page * _this.count >= result.data.total_total_count){
+                                _this.isFinished = true
+                            }
                         })
                     }
                 },300)
@@ -217,6 +227,8 @@
             this.$loading = $('main>section .loading')
             this.isloading = false
             this.scrolled = false
+            this.count = 30
+            this.isFinished = false
 
             $('main>section>.search-area>.search-btn').click(function(){
                 _this.getData(function(result){
@@ -233,12 +245,15 @@
             _this.$sections.eq(2).scroll(function(){
                 if(clock) clearInterval(clock)
                 clock  = setTimeout(function(){
-                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(2).height() - 10)){
+                    if((_this.$main.height() + _this.$main.scrollTop()) >= (_this.$sections.eq(2).height() - 10)&&!_this.isFinished){
                         if(_this.scrolled) return
                         _this.scrolled = true
                         _this.getData(function(result){
                             _this.renderData(result.data.items)
                             _this.page += 1
+                            if(_this.page * _this.count >= result.data.total_total_count){
+                                _this.isFinished = true
+                            }
                         })
                     }
                 },300)
